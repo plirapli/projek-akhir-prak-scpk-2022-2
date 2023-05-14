@@ -79,7 +79,7 @@ function btnShowData_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 allData = readtable('airline.csv');
-dataSubset = allData(:, 2:24);
+dataSubset = allData(:, 3:24);
 
 set(handles.tabel, 'Data', table2cell(dataSubset));
 set(handles.tabel, 'ColumnName', dataSubset.Properties.VariableNames);
@@ -219,7 +219,6 @@ travel = get(travelValue, 'Value');
 
 % Dropdown
 class = get(handles.dropdownClass,'Value');
-disp(class);
 
 % Slider
 inflightWifi = get(handles.textInflightWifi, 'string');
