@@ -22,7 +22,7 @@ function varargout = knn(varargin)
 
 % Edit the above text to modify the response to help knn
 
-% Last Modified by GUIDE v2.5 14-May-2023 18:39:11
+% Last Modified by GUIDE v2.5 16-May-2023 01:52:15
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -83,6 +83,13 @@ dataSubset = allData(:, 3:24);
 
 set(handles.tabel, 'Data', table2cell(dataSubset));
 set(handles.tabel, 'ColumnName', dataSubset.Properties.VariableNames);
+set(handles.tabelData, 'ColumnWidth', 'auto');
+
+% Menyesuaikan ukuran tabel
+set(handles.tabelData, 'Position', [x y width height]);
+
+% Menampilkan tabel
+set(handles.tabelData, 'Visible', 'on');
 
 
 function radioButtonMale_Callback(hObject, eventdata, handles)
@@ -179,17 +186,17 @@ end
 
 
 function hasil_Callback(hObject, eventdata, handles)
-% hObject    handle to hasil (see GCBO)
+% hObject    handle to textHasil (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of hasil as text
-%        str2double(get(hObject,'String')) returns contents of hasil as a double
+% Hints: get(hObject,'String') returns contents of textHasil as text
+%        str2double(get(hObject,'String')) returns contents of textHasil as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function hasil_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to hasil (see GCBO)
+function textHasil_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to textHasil (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -208,14 +215,32 @@ function btnClassify_Callback(hObject, eventdata, handles)
 
 % Get semua data
 % Button group
-genderValue = get(handles.buttonGroupGender, 'SelectedObject');
-gender = get(genderValue, 'Value');
+% Gender (Female 1, Male 2);
+selectedGender = get(handles.buttonGroupGender, 'SelectedObject');
+gender = get(selectedGender, 'String');
+if (gender == "Female")
+  gender = 1;
+else
+  gender = 2;
+end
 
-customerTypeValue = get(handles.buttonGroupCustomer, 'SelectedObject');
-customerType = get(customerTypeValue, 'Value');
+% Customer Type (Loyal 1, Disloyal 2)
+selectedCustomerType = get(handles.buttonGroupCustomer, 'SelectedObject');
+customerType = get(selectedCustomerType, 'String');
+if (customerType == "Loyal Customer")
+  customerType = 1;
+else
+  customerType = 2;
+end
 
-travelValue = get(handles.buttonGroupTravel,'SelectedObject');
-travel = get(travelValue, 'Value');
+% Travel (Busines 1, Personal 2)
+selectedTravel = get(handles.buttonGroupTravel,'SelectedObject');
+travel = get(selectedTravel, 'String');
+if (travel == "Business Travel")
+  travel = 1;
+else
+  travel = 2;
+end
 
 % Dropdown
 class = get(handles.dropdownClass,'Value');
@@ -283,13 +308,23 @@ training = allData(:, 3:24);
 % Group
 group = allData{:, 25};
 
-% Proses & hasil
+% Proses & textHasil
 Model = fitcknn(training, group, "NumNeighbors", k);
 result = predict(Model, sample);
 
-% Menampilkan hasil
-set(handles.hasil, 'string', (result));
+% Menampilkan textHasil
+set(handles.textHasil, 'string', (result));
 
+% Menampilkan gambar hasil
+if (result == "satisfied")
+  imageData = imread('assets/satisfied.jpg'); % Baca gambar
+else
+  imageData = imread('assets/dissatisfied.png'); % Baca gambar
+end
+
+% Menampilkan gambar pada komponen Axes
+axesHandle = handles.axeHasil;
+imshow(imageData, 'Parent', axesHandle);
 
 function inputK_Callback(hObject, eventdata, handles)
 % hObject    handle to inputK (see GCBO)
@@ -770,3 +805,60 @@ function inputAge_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+
+function inputDataQty_Callback(hObject, eventdata, handles)
+% hObject    handle to inputDataQty (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of inputDataQty as text
+%        str2double(get(hObject,'String')) returns contents of inputDataQty as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function inputDataQty_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to inputDataQty (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function inputCustomRow_Callback(hObject, eventdata, handles)
+% hObject    handle to inputCustomRow (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of inputCustomRow as text
+%        str2double(get(hObject,'String')) returns contents of inputCustomRow as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function inputCustomRow_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to inputCustomRow (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+% Hint: get(hObject,'Value') returns toggle state of radioButtonFemale
+
+
+% --- Executes on button press in radioButtonFemale.
+function radioButtonFemale_Callback(hObject, eventdata, handles)
+% hObject    handle to radioButtonFemale (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of radioButtonFemale
