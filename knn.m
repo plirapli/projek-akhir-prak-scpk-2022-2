@@ -214,7 +214,7 @@ function btnClassify_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Get semua data
-% Button group
+% Button group, mengubah string menjadi index
 % Gender (Female 1, Male 2);
 selectedGender = get(handles.buttonGroupGender, 'SelectedObject');
 gender = get(selectedGender, 'String');
@@ -270,6 +270,13 @@ arrivalDelay = get(handles.inputArrivalDelay, 'string');
 % Mengambil jumlah K
 k = get(handles.inputK, 'string');
 
+% Error handling kalo textField kosong
+if (isempty(age) || isempty(flightDistance) || isempty(departureDelay) || isempty(arrivalDelay) || isempty(k))
+    % Menampilkan pesan kesalahan
+    errordlg('Input tidak boleh kosong', 'Kesalahan');
+    return; % Menghentikan eksekusi lebih lanjut
+end
+
 % Mengubah string menjadi double
 inflightWifi = str2double(inflightWifi);
 departureArrivalTime = str2double(departureArrivalTime);
@@ -286,13 +293,20 @@ checkinService = str2double(checkinService);
 inflightService = str2double(inflightService);
 cleanliness = str2double(cleanliness);
 
-% Mengubah string menjadi idx
+% Mengubah string menjadi double
 age = str2double(age);
 flightDistance = str2double(flightDistance);
 departureDelay = str2double(departureDelay);
 arrivalDelay = str2double(arrivalDelay);
 
 k = str2double(k); 
+
+% Error handling kalo textField bukan angka
+if (isnan(age) || isnan(flightDistance) || isnan(departureDelay) || isnan(arrivalDelay) || isnan(k))
+    % Menampilkan pesan kesalahan
+    errordlg('Input harus berupa angka', 'Kesalahan');
+    return; % Menghentikan eksekusi lebih lanjut
+end
 
 % Membuat vektor
 sample = [gender customerType age travel class flightDistance inflightWifi departureArrivalTime onlineBooking gateLocation foodDrink onlineBoarding seatComfort inflightEntertainment onboardService legRoom baggageHandling checkinService inflightService cleanliness departureDelay arrivalDelay]; 
